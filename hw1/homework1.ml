@@ -26,17 +26,37 @@ Remarks, if any:
 
 
 (* Question 1 *)
+let min (a, b) = 
+   if a > b then
+      b
+   else
+      a
 
-let gcd (a,b) = 
-   failwith "not implemented"
-
+let rec gcd (a,b) = 
+   if (a - b) >= 0 then
+      gcd(abs(a - b), min(a, b))
+   else
+      a
 
 let is_coprime (a,b) = 
-   failwith "not implemented"
+   if gcd (a, b) == 1 then
+      true
+   else
+      false
+
+let rec euler_helper(n, i, x) = 
+   if i <= n then
+      if is_coprime(n, i) then
+         euler_helper(n, i+1, x+1)
+      else
+         euler_helper(n, i+1, x)
+   else
+      x
 
 
 let euler (n) = 
-   failwith "not implemented"
+   euler_helper(n, 1, 0)
+   
 
 
 let coprimes (n) = 
