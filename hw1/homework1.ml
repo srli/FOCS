@@ -33,10 +33,12 @@ let min (a, b) =
       a
 
 let rec gcd (a,b) = 
-   if (a - b) >= 0 then
+   if abs(a - b) > 0 then
       gcd(abs(a - b), min(a, b))
-   else
+   else if (a - b) == 0 then
       a
+   else
+      failwith "gcd failure"
 
 let is_coprime (a,b) = 
    if gcd (a, b) == 1 then
@@ -56,12 +58,18 @@ let rec euler_helper(n, i, x) =
 
 let euler (n) = 
    euler_helper(n, 1, 0)
-   
 
+let rec coprimes_helper(n, i, x) = 
+   if i <= n then
+      if is_coprime(n, i) then
+         coprimes_helper(n, i+1, x@[i])
+      else
+         coprimes_helper(n, i+1, x)
+   else
+      x
 
 let coprimes (n) = 
-   failwith "not implemented"
-
+   coprimes_helper(n, 1, [])
 
 
 (* Question 2 *)
