@@ -75,20 +75,32 @@ let coprimes (n) =
 (* Question 2 *)
 
 let append (xs,ys) = 
-   failwith "not implemented"
+   xs @ ys
 
+let rec sum (l) =
+    match l with
+    | [] -> 0
+    | hd :: tl -> hd + sum(tl)
 
-let flatten (xss) = 
-   failwith "not implemented"
+let rec flatten (xss) = 
+   match xss with
+   | [] -> []
+   | hd :: tl -> hd @ flatten(tl)
 
+let rec last (xs) = 
+   match xs with
+   | [] -> 0
+   | [x] -> x
+   | hd :: tl -> last(tl)
 
-let nth (n,xs) = 
-   failwith "not implemented"
-
-
-let last (xs) = 
-   failwith "not implemented"
-
+let rec nth (xs, n) = 
+   match n with
+   | [] -> failwith "out of bounds"
+   | hd :: tl -> 
+      if xs > 1 then
+         nth(xs - 1, tl)
+      else
+         hd
 
 let separate (xs) = 
    failwith "not implemented"
