@@ -55,7 +55,6 @@ let rec euler_helper(n, i, x) =
    else
       x
 
-
 let euler (n) = 
    euler_helper(n, 1, 0)
 
@@ -89,7 +88,7 @@ let rec flatten (xss) =
 
 let rec last (xs) = 
    match xs with
-   | [] -> 0
+   | [] -> failwith "empty list"
    | [x] -> x
    | hd :: tl -> last(tl)
 
@@ -102,10 +101,18 @@ let rec nth (xs, n) =
       else
          hd
 
-let rec separate (xs) = 
+let rec separate_fst_helper(xs) = 
    match xs with
-   | [] -> ([], [])
-   | (x, y) :: (tl) -> tl(* x::separate(tl), y::separate(tl) *)
+   | [] -> []
+   | (x, y) :: tl -> x::separate_fst_helper(tl)
+
+let rec separate_lst_helper(xs) = 
+   match xs with
+   | [] -> []
+   | (x, y) :: tl -> y::separate_lst_helper(tl)
+
+let rec separate (xs) = 
+   (separate_fst_helper(xs), separate_lst_helper(xs))
 
 
 (* Question 3 *)
@@ -147,15 +154,31 @@ let setEqual (xs,ys) =
    else
       false
 
+let rec setUnion_helper (zs) = 
+   match zs with
+   | [] -> []
+   | hd :: tl ->
+      if setIn(hd, tl) = false then
+         hd::setUnion_helper(tl)
+      else
+         setUnion_helper(tl)
 
 let setUnion (xs,ys) = 
-   failwith "not implemented"
+   setUnion_helper(xs@ys)
 
+let rec setInter (xs,ys) = 
+   match xs with
+   | [] -> []
+   | hd :: tl ->
+      if setIn(hd, ys) then
+         hd::setInter(tl, ys)
+      else
+         setInter(tl, ys)
 
-let setInter (xs,ys) = 
-   failwith "not implemented"
-
+let rec setSize_helper (xs) = 
+   match xs with
+   | [] -> 0
+   | hd :: tl -> setSize_helper(tl) + 1
 
 let setSize (xs) = 
-   failwith "not implemented"
-
+   setSize_helper(setUnion_helper(xs))
