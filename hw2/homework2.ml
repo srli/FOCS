@@ -49,23 +49,10 @@ let rec prepend (letter, lang) =
     else
       prepend(letter, tl)
 
-
 let rec concatenate (alphabet, lang) =
   match alphabet with
   | [] -> []
   | hd :: tl -> prepend(hd, lang)@concatenate(tl, lang);;
-
-
-(* let rec all_strings_helper(alphabet, lang, n) =
-  if n > 1 then
-    all_strings_helper(alphabet,
-      (match lang with
-        | [] -> []
-        | hd :: tl -> [hd]@concatenate(alphabet, lang)),
-      n-1)
-  else
-    lang
- *)
 
 let rec all_strings_helper(alphabet, lang, n) =
   if n > 1 then
@@ -78,19 +65,36 @@ let all_strings (alphabet, n) =
 
 
 
-(* (* QUESTION 2 *)
+(* QUESTION 2 *)
 
-let restrict (xs,n) = failwith "not implemented"
+let rec restrict (xs,n) =
+  match xs with
+  | [] -> []
+  | hd :: tl ->
+    if String.length(hd) <= n then
+      [hd]@restrict(tl, n)
+    else
+      restrict(tl, n)
 
+let rec setUnion_helper (zs) =
+   match zs with
+   | [] -> []
+   | hd :: tl ->
+      if setIn(hd, tl) = false then
+         hd::setUnion_helper(tl)
+      else
+         setUnion_helper(tl)
 
-let langUnion (xs,ys,n) = failwith "not implemented"
+let langUnion (xs,ys,n) =
+  restrict(setUnion_helper(xs@ys), n)
 
+let langConcat (xs,ys,n) =
+  restrict(concatenate(xs, ys), n)
 
-let langConcat (xs,ys,n) = failwith "not implemented"
+let rec langStar_helper (xs, lang, n) =
 
+let langStar (xs,n) =
 
-let langStar (xs,n) = failwith "not implemented"
- *)
 
 
 (* (* QUESTION 3 *)
