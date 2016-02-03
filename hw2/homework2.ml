@@ -32,10 +32,10 @@ Notes:
 
 (* QUESTION 1 *)
 
-let rec prepend (letter: string) (lang: string list) =
+let rec prepend (letter, lang) =
   match lang with
-  | [] -> "0"
-  | hd :: tl -> letter^hd@prepend(letter, tl);;
+  | [] -> []
+  | hd :: tl -> [letter^hd] :: prepend(letter, tl);;
 
 
 let concatenate (alphabet, lang) = failwith "not implemented"
