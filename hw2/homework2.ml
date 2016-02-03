@@ -31,17 +31,50 @@ Notes:
 
 
 (* QUESTION 1 *)
+let rec setIn (e,xs) =
+   match xs with
+   | [] -> false
+   | hd :: tl ->
+      if hd = e then
+         true
+      else
+         setIn(e, tl)
 
 let rec prepend (letter, lang) =
   match lang with
   | [] -> []
-  | hd :: tl -> [letter^hd] :: prepend(letter, tl);;
+  | hd :: tl ->
+    if setIn(letter^hd, lang) = false then
+      [letter^hd]@prepend(letter, tl)
+    else
+      prepend(letter, tl)
 
 
-let concatenate (alphabet, lang) = failwith "not implemented"
+let rec concatenate (alphabet, lang) =
+  match alphabet with
+  | [] -> []
+  | hd :: tl -> prepend(hd, lang)@concatenate(tl, lang);;
 
 
-let all_strings (alphabet, n) = failwith "not implemented"
+(* let rec all_strings_helper(alphabet, lang, n) =
+  if n > 1 then
+    all_strings_helper(alphabet,
+      (match lang with
+        | [] -> []
+        | hd :: tl -> [hd]@concatenate(alphabet, lang)),
+      n-1)
+  else
+    lang
+ *)
+
+let rec all_strings_helper(alphabet, lang, n) =
+  if n > 1 then
+    all_strings_helper(alphabet,lang@concatenate(alphabet, lang), n-1)
+  else
+    lang
+
+let all_strings (alphabet, n) =
+  [""]@all_strings_helper(alphabet, alphabet, n)
 
 
 
