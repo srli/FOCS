@@ -91,15 +91,17 @@ let langUnion (xs,ys,n) =
 let langConcat (xs,ys,n) =
   restrict(concatenate(xs, ys), n)
 
+(* Possible alternate implementation of langstar *)
 (* let rec langStar_helper (xs, lang, n) =
   match xs with
   | [] -> []
   | hd :: tl ->
     if String.length(hd) > n then
-      concatenate(hd, xs)@xs
+      langStar_helper(tl, concatenate(hd, xs)@xs, n))
     else
-      xs
+      langStar_helper(tl, xs, n)
  *)
+
 let langStar (xs,n) =
   restrict(all_strings(xs, n), n)
 
