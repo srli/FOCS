@@ -91,13 +91,20 @@ let langUnion (xs,ys,n) =
 let langConcat (xs,ys,n) =
   restrict(concatenate(xs, ys), n)
 
-let rec langStar_helper (xs, lang, n) =
-
+(* let rec langStar_helper (xs, lang, n) =
+  match xs with
+  | [] -> []
+  | hd :: tl ->
+    if String.length(hd) > n then
+      concatenate(hd, xs)@xs
+    else
+      xs
+ *)
 let langStar (xs,n) =
+  restrict(all_strings(xs, n), n)
 
 
-
-(* (* QUESTION 3 *)
+(* QUESTION 3 *)
 
 
 (* some helper code -- vaguely advanced OCaml in here, but barely *)
@@ -203,13 +210,12 @@ let dump l =
 
 (* Placeholder for your regular expression. Replace "0" by your actual answer *)
 
-let regexp_a = "0"
+let regexp_a = "(a+b)(a+b)(a+b)"
 
-let regexp_b = "0"
+let regexp_b = "((a+b)(a+b)(a+b))*"
 
-let regexp_c = "0"
+let regexp_c = "b*ab*"
 
-let regexp_d = "0"
+let regexp_d = "b*a(aa)*b*"
 
-let regexp_e = "0"
- *)
+let regexp_e = "(a+b)*(ba)*(a+b)*"
