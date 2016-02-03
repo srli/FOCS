@@ -101,7 +101,15 @@ let rec nth (xs, n) =
       else
          hd
 
-let rec separate_fst_helper(xs) = 
+let rec separate (lst) =
+   match last with 
+   | [] -> ([], [])
+   | (a, b) :: t -> 
+      (match seperate(t) with 
+         | (l1, l2) -> (a::l1, b::l2)
+      )
+
+(* let rec separate_fst_helper(xs) = 
    match xs with
    | [] -> []
    | (x, y) :: tl -> x::separate_fst_helper(tl)
@@ -113,7 +121,7 @@ let rec separate_lst_helper(xs) =
 
 let rec separate (xs) = 
    (separate_fst_helper(xs), separate_lst_helper(xs))
-
+ *)
 
 (* Question 3 *)
 

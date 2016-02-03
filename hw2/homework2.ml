@@ -8,6 +8,11 @@ Email: sophia.li@students.olin.edu
 
 Remarks, if any:
 
+Notes:
+
+| -> or
++ -> 
+
 *)
 
 
@@ -27,8 +32,10 @@ Remarks, if any:
 
 (* QUESTION 1 *)
 
-
-let prepend (letter, lang) = failwith "not implemented"
+let rec prepend (letter, lang) = 
+  match lang with
+  | [] -> "0"
+  | hd :: tl -> letter^hd @ prepend(letter, tl);;
 
 
 let concatenate (alphabet, lang) = failwith "not implemented"
