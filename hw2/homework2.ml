@@ -31,23 +31,12 @@ Notes:
 
 
 (* QUESTION 1 *)
-let rec setIn (e,xs) =
-   match xs with
-   | [] -> false
-   | hd :: tl ->
-      if hd = e then
-         true
-      else
-         setIn(e, tl)
+
 
 let rec prepend (letter, lang) =
   match lang with
   | [] -> []
-  | hd :: tl ->
-    if setIn(letter^hd, lang) = false then
-      [letter^hd]@prepend(letter, tl)
-    else
-      prepend(letter, tl)
+  | hd :: tl -> (letter^hd)::prepend(letter, tl)
 
 let rec concatenate (alphabet, lang) =
   match alphabet with
@@ -56,13 +45,15 @@ let rec concatenate (alphabet, lang) =
 
 let rec all_strings_helper(alphabet, lang, n) =
   if n > 1 then
-    all_strings_helper(alphabet,lang@concatenate(alphabet, lang), n-1)
+    all_strings_helper(alphabet,[""]@concatenate(alphabet, lang), n-1)
   else
     lang
 
-let all_strings (alphabet, n) =
-  [""]@all_strings_helper(alphabet, alphabet, n)
-
+let rec all_strings (alphabet, n) =
+  if n > 0 then
+    ""::concatenate(alphabet, all_strings(alphabet, n-1))
+  else
+    [""]
 
 
 (* QUESTION 2 *)
@@ -76,31 +67,32 @@ let rec restrict (xs,n) =
     else
       restrict(tl, n)
 
-let rec setUnion_helper (zs) =
+let rec setIn (e,xs) =
+   match xs with
+   | [] -> false
+   | hd :: tl ->
+      if hd = e then
+         true
+      else
+         setIn(e, tl)
+
+let rec langUnion_helper (zs, n) =
    match zs with
    | [] -> []
    | hd :: tl ->
       if setIn(hd, tl) = false then
-         hd::setUnion_helper(tl)
+        if String.length(hd) <= n then
+          [hd]@langUnion_helper(tl, n)
+        else
+          langUnion_helper(tl, n)
       else
-         setUnion_helper(tl)
+         langUnion_helper(tl, n)
 
 let langUnion (xs,ys,n) =
-  restrict(setUnion_helper(xs@ys), n)
+  langUnion_helper(xs@ys, n)
 
 let langConcat (xs,ys,n) =
   restrict(concatenate(xs, ys), n)
-
-(* Possible alternate implementation of langstar *)
-(* let rec langStar_helper (xs, lang, n) =
-  match xs with
-  | [] -> []
-  | hd :: tl ->
-    if String.length(hd) > n then
-      langStar_helper(tl, concatenate(hd, xs)@xs, n))
-    else
-      langStar_helper(tl, xs, n)
- *)
 
 let langStar (xs,n) =
   restrict(all_strings(xs, n), n)
@@ -218,6 +210,8 @@ let regexp_b = "((a+b)(a+b)(a+b))*"
 
 let regexp_c = "b*ab*"
 
-let regexp_d = "b*a(aa)*b*"
+let regexp_d = "b*a(b*ab*ab*)*"
 
-let regexp_e = "(a+b)*(ba)*(a+b)*"
+(* let regexp_d = "b*a(b*ab*ab*)*"
+ *)
+let regexp_e = "a*(baa*)*a*"
