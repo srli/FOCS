@@ -8,10 +8,15 @@ Email: sophia.li@students.olin.edu
 
 Remarks, if any:
 
+langUnion could probably be done better. As it is now, there's a 
+stack overflow on regexp_d, probably due to the number of wildcards
+present in the expression...
+
+If I could implement a way that didn't require the setIn function, I
+think langUnion could be much more efficient.
+
 Notes:
 
-| -> or
-+ ->
 
 *)
 
@@ -212,6 +217,4 @@ let regexp_c = "b*ab*"
 
 let regexp_d = "b*a(b*ab*ab*)*"
 
-(* let regexp_d = "b*a(b*ab*ab*)*"
- *)
 let regexp_e = "a*(baa*)*a*"
