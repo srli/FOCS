@@ -105,14 +105,23 @@ let step (fa,q,a) =
 
 let rec steps (fa,q,syms) = 
   match syms with
-  | 
-(*   match syms with
-  | [] -> "no steps found"
-  | hd :: tl ->
-      steps(fa, step(fa, q, hd), tl) *)
+  | [] -> q
+  | hd :: tl -> 
+    steps(fa, step(fa, q, hd), tl)
 
+let rec isDFA_helper(fa, deltas, states) = 
+  match deltas with
+  | [] -> true
+  | (q, a, p) :: tl ->
+    if List.length(findTransitions(fa, q, a)) = 1 then
+      isDFA_helper(fa, tl)
+    else
+      false
 
-(* let isDFA (fa) = failwith "isDFA not implemented" *)
+(* No transitions can have the same q and a *)
+let isDFA (fa) =
+  isDFA_helper(fa, fa.delta, fa.states)
+
 
 
 (* let acceptDFA (fa,input) = failwith "acceptDFA not implemented" *)
