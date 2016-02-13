@@ -302,10 +302,27 @@ let rec stepsAll (fa,qs,syms) =
   | hd :: tl ->
     stepsAll(fa, stepAll(fa, qs, hd), tl)
 
+(* let acceptDFA (fa,input) = 
+  if isDFA(fa) then
+    match explode(input) with
+    | [] -> true
+    | _ ->
+      if isAccepting(fa, steps(fa, fa.start, explode(input))) then
+        true
+      else
+        false
+  else
+    failwith "Not DFA" *)
 
-let acceptNFA (fa,input) = failwith "acceptNFA not implemented"
 
-
+let acceptNFA (fa,input) =
+  match explode(input) with
+  | [] -> true
+  | _ ->
+    if isAcceptingAny(fa, stepsAll(fa, [fa.start], explode(input))) then
+      true
+    else
+      false
 
 (* 
  * A sample DFA for testing
