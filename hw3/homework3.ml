@@ -254,21 +254,56 @@ let nfa_q2_d = {
 
 (* QUESTION 3 *)
 
+let rec setIn (e,xs) =
+   match xs with
+   | [] -> false
+   | hd :: tl ->
+      if hd = e then
+         true
+      else
+         setIn(e, tl)
 
-let keepTarget (trs) = failwith "keepTarget not implemented"
+let rec filter (trs) = 
+  match trs with
+  | [] -> []
+  | hd :: tl ->
+    if setIn(hd, tl) = false then
+      hd :: filter(tl)
+    else
+      filter(tl)
 
+let rec keepTarget_helper (trs) = 
+  match trs with
+  | [] -> []
+  | (q, a, p) :: tl ->
+    p::keepTarget_helper(tl)
 
-let isAcceptingAny (fa,qs) = failwith "isAcceptingAny not implemented"
+let keepTarget (trs) = 
+  filter(keepTarget_helper(trs))
 
+let rec isAcceptingAny (fa,qs) =
+  match qs with
+  | [] -> false
+  | hd :: tl ->
+    if isAccepting (fa, hd) then
+      true
+    else
+      isAcceptingAny(fa, tl)
 
-let rec stepAll (fa,qs,a) = failwith "stepAll not implemented"
+let rec stepAll (fa,qs,a) = 
+  match qs with
+  | [] -> []
+  | hd :: tl ->
+    keepTarget(findTransitions(fa, hd, a))@stepAll(fa, tl, a)
 
-
-let rec stepsAll (fa,qs,syms) = failwith "stepsAll not implemented"
+let rec stepsAll (fa,qs,syms) = 
+  match syms with
+  | [] -> qs
+  | hd :: tl ->
+    stepsAll(fa, stepAll(fa, qs, hd), tl)
 
 
 let acceptNFA (fa,input) = failwith "acceptNFA not implemented"
-
 
 
 
