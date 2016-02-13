@@ -182,4 +182,43 @@ let map_append_3 f xs = map_general2 (fun x y -> (f x)@y) xs
 (* In map_general2, we combine the function transform and the combinator
 function together to make it a bit more elegant *)
 
+let rec sum xs =
+	match xs with
+	| [] -> 0
+	| x :: xs' -> x + sum xs'
+
+let rec sum_general comb xs = 
+	match xs with
+	| [] -> 0
+	| x :: xs' -> comb x (sum_general comb xs')
+(* See how sum_general and map_general2 is identical save for the type
+returned in the base case? Let's generalize more *)
+
+let rec general comb xs base =
+	match xs with 
+	| [] -> base
+	| x :: xs' -> comb x (general comb xs' base)
+(* 
+general (fun x y -> x+y) [1;2;3;4;5] 0;;
+>> int = 15
+
+general (fun x y -> x+y) [1;2;3;4;5] 100;;
+>> int = 115
+
+general (fun x y -> (x+1)::y) [1;2;3;4;5] [];;
+>> int list = [2; 3; 4; 5; 6]
+
+Woooah so cool. Essentially, this general function is the definition of
+recursing over a list. We've generalized everything else away. The computer
+science name of this function is "fold_right" or "reduce"
+*)
+
+let rec fold_right comb xs base =
+	match xs with 
+	| [] -> base
+	| x :: xs' -> comb x (fold_right comb xs' base)
+
+
+
+
 

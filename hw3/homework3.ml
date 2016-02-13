@@ -90,16 +90,21 @@ let rec findTransitions_helper (deltas,q,a) =
 let findTransitions (fa,q,a) = 
   findTransitions_helper(fa.delta, q, a)
 
+let rec isAccepting_helper (a_states, s) = 
+  match a_states with
+  | [] -> false
+  | hd :: tl ->
+    if hd = s then
+      true
+    else
+      isAccepting_helper(tl, s)
 
-let isAccepting (fa,s) = 
-  if fa.accepting = [s] then
-    true
-  else
-    false
+let isAccepting (fa,s) =
+  isAccepting_helper(fa.accepting, s)
 
 let step (fa,q,a) =
   match findTransitions(fa, q, a) with
-  | [] -> "no step found"
+  | [] -> failwith "no step found"
   | (q1, a1, p1) :: tl ->
       p1
 
@@ -109,25 +114,40 @@ let rec steps (fa,q,syms) =
   | hd :: tl -> 
     steps(fa, step(fa, q, hd), tl)
 
-let rec isDFA_helper(fa, deltas, states) = 
-  match deltas with
+let rec isDFA_helper2(fa, state, alphabet) = 
+  match alphabet with
   | [] -> true
-  | (q, a, p) :: tl ->
-    if List.length(findTransitions(fa, q, a)) = 1 then
-      isDFA_helper(fa, tl)
+  | a_hd :: a_tl ->
+    if List.length(findTransitions(fa, state, a_hd)) = 1 then
+      isDFA_helper2(fa, state, a_tl)
+    else
+      false
+
+let rec isDFA_helper(fa, states, alphabet) = 
+  match states with
+  | [] -> true
+  | s_hd :: s_tl ->
+    if isDFA_helper2(fa, s_hd, alphabet) then
+      isDFA_helper(fa, s_tl, alphabet)
     else
       false
 
 (* No transitions can have the same q and a *)
 let isDFA (fa) =
-  isDFA_helper(fa, fa.delta, fa.states)
+  isDFA_helper(fa, fa.states, fa.alphabet)
 
 
-
-(* let acceptDFA (fa,input) = failwith "acceptDFA not implemented" *)
-
-
-
+let acceptDFA (fa,input) = 
+  if isDFA(fa) then
+    match explode(input) with
+    | [] -> true
+    | _ ->
+      if isAccepting(fa, steps(fa, fa.start, explode(input))) then
+        true
+      else
+        false
+  else
+    failwith "Not DFA"
 
 
 (* QUESTION 2 *)
@@ -135,53 +155,119 @@ let isDFA (fa) =
 (* THESE ARE PLACEHOLDERS - THEY DEFINE EMPTY AUTOMATA *)
 (* REPLACE BY YOUR OWN DEFINITIONS *)
 
+let dfaThreeA = { 
+  states = ["start";"one";"two"];
+  alphabet = ['a';'b'];
+  delta = [ ("start",'a',"one");
+      ("one",'a',"two");
+      ("two",'a',"start");
+      ("start",'b',"start");
+      ("one",'b',"one");
+      ("two",'b',"two") ];
+  start = "start";
+  accepting = ["start"]
+} 
 
-(* let dfa_q2_a = { states = [0];
-		 alphabet = ['a'];
-		 delta = [ ];
-		 start = 0;
-		 accepting = []}
+let dfa_q2_a = { 
+  states = ["start"; "oneb"; "twob"; "fail"];
+  alphabet = ['a';'b'];
+  delta = [("start", 'a', "start");
+          ("start", 'b', "oneb");
+          ("oneb", 'a', "start");
+          ("oneb", 'b', "twob");
+          ("twob", 'a', "start");
+          ("twob", 'b', "fail");
+          ("fail", 'a', "fail");
+          ("fail", 'b', "fail")];
+  start = "start";
+  accepting = ["start"; "oneb"; "twob"]
+}
 
 
-let dfa_q2_b = { states = [0];
-		 alphabet = ['a'];
-		 delta = [ ];
-		 start = 0;
-		 accepting = []}
+let dfa_q2_b = { 
+  states = ["start"; "oneb"; "twob"; "threeb"; "onea"; "twoa"; "threea"; "fail"];
+  alphabet = ['a';'b'];
+  delta = [("start", 'a', "onea");
+          ("start", 'b', "oneb");
+          ("onea", 'a', "twoa");
+          ("onea", 'b', "oneb");
+          ("twoa", 'a', "threea");
+          ("twoa", 'b', "oneb");
+          ("threea", 'a', "fail");
+          ("threea", 'b', "oneb");
+          ("oneb", 'b', "twob");
+          ("oneb", 'a', "onea");
+          ("twob", 'b', "threeb");
+          ("twob", 'a', "onea");
+          ("threeb", 'b', "fail");
+          ("threeb", 'a', "onea");
+          ("fail", 'a', "fail");
+          ("fail", 'b', "fail")];
+  start = "start";
+  accepting = ["start"; "oneb"; "twob"; "threeb"; "onea"; "twoa"; "threea"]
+}
 
 
-let dfa_q2_c = { states = [0];
-		 alphabet = ['a'];
-		 delta = [ ];
-		 start = 0;
-		 accepting = []}
+let dfa_q2_c = {
+  states = ["start"; "oneb"; "twob"; "threeb"; "onea"; "twoa"; "threea"; "fail"];
+  alphabet = ['a';'b'];
+  delta = [("start", 'a', "onea");
+          ("start", 'b', "oneb");
+          ("onea", 'a', "twoa");
+          ("onea", 'b', "fail");
+          ("twoa", 'a', "threea");
+          ("twoa", 'b', "fail");
+          ("threea", 'a', "threea");
+          ("threea", 'b', "oneb");
+          ("oneb", 'b', "twob");
+          ("oneb", 'a', "fail");
+          ("twob", 'b', "threeb");
+          ("twob", 'a', "fail");
+          ("threeb", 'b', "threeb");
+          ("threeb", 'a', "onea");
+          ("fail", 'a', "fail");
+          ("fail", 'b', "fail")];
+  start = "start";
+  accepting = ["threeb"; "threea"]
+}
 
 
-let nfa_q2_d = { states = [0];
-		 alphabet = ['a'];
-		 delta = [ ];
-		 start = 0;
-		 accepting = []} *)
-
-
+let nfa_q2_d = {
+  states = ["start"; "success"; "onea"; "twoa"; "threea"; "failb"];
+  alphabet = ['a';'b'];
+  delta = [("start", 'b', "success");
+          ("start", 'a', "onea");
+          ("onea", 'b', "success");
+          ("onea", 'a', "twoa");
+          ("twoa", 'b', "success");
+          ("twoa", 'a', "threea");
+          ("threea", 'a', "threea");
+          ("threea", 'b', "failb");
+          ("failb", 'b', "failb");
+          ("failb", 'a', "threea");
+          ("success", 'a', "success");
+          ("success", 'b', "success")];
+  start = "start";
+  accepting = ["success"; "onea"; "twoa"; "threea"]
+}
 
 
 (* QUESTION 3 *)
 
 
-(* let keepTarget (trs) = failwith "keepTarget not implemented" *)
+let keepTarget (trs) = failwith "keepTarget not implemented"
 
 
-(* let isAcceptingAny (fa,qs) = failwith "isAcceptingAny not implemented" *)
+let isAcceptingAny (fa,qs) = failwith "isAcceptingAny not implemented"
 
 
-(* let rec stepAll (fa,qs,a) = failwith "stepAll not implemented" *)
+let rec stepAll (fa,qs,a) = failwith "stepAll not implemented"
 
 
-(* let rec stepsAll (fa,qs,syms) = failwith "stepsAll not implemented" *)
+let rec stepsAll (fa,qs,syms) = failwith "stepsAll not implemented"
 
 
-(* let acceptNFA (fa,input) = failwith "acceptNFA not implemented" *)
+let acceptNFA (fa,input) = failwith "acceptNFA not implemented"
 
 
 
@@ -230,8 +316,6 @@ let nfaLastThreeB = {
 } 
 
 
-
-
 (* This function is the base function that langDFA and
  * langNFA use -- it basically loops through all the strings
  * of length up to n, and prints those that are accepted by the
@@ -244,7 +328,7 @@ let nfaLastThreeB = {
  * letter of the alphabet at the corresponding index in the alphabet. 
  *
  * The key is that we can enumerate integers super easily
- *
+ * *)
 
 
 let langFA accept (fa,n) = 
@@ -286,7 +370,7 @@ let langFA accept (fa,n) =
   	  (loop2 0; loop (i+1))
         else ()  in
     loop 0
- *)
+
 
 (* 
  * Tester functions that dump the language accepted by a
@@ -294,6 +378,6 @@ let langFA accept (fa,n) =
  *
  *)
  
-(* let langDFA x = langFA acceptDFA x *)
-(* let langNFA x = langFA acceptNFA x *)
+let langDFA x = langFA acceptDFA x
+let langNFA x = langFA acceptNFA x
 
