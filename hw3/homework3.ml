@@ -8,6 +8,9 @@ Email: sophia.li@students.olin.edu
 
 Remarks, if any:
 
+I'd really like to try to solve these problems without using so many
+helper functions. Next time...
+
 *)
 
 
@@ -301,19 +304,6 @@ let rec stepsAll (fa,qs,syms) =
   | [] -> qs
   | hd :: tl ->
     stepsAll(fa, stepAll(fa, qs, hd), tl)
-
-(* let acceptDFA (fa,input) = 
-  if isDFA(fa) then
-    match explode(input) with
-    | [] -> true
-    | _ ->
-      if isAccepting(fa, steps(fa, fa.start, explode(input))) then
-        true
-      else
-        false
-  else
-    failwith "Not DFA" *)
-
 
 let acceptNFA (fa,input) =
   match explode(input) with
