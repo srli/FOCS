@@ -7,6 +7,10 @@ Name: Sophia Li
 Email: sophia.li@students.olin.edu
 
 Remarks, if any:
+I didn't know List.map2 existed and spent 4 hours trying to code inject.
+I cried real tears when I realized. :(
+
+On the bright side, at least I know now.
 
 ***************************************************)
 
@@ -166,6 +170,7 @@ let at_least n p xs =
   else
     false
 
+(* y is also the accumulator *)
 let max_positive xs =  
   List.fold_right (fun x y -> if x > y then x else y) xs 0
 
@@ -181,48 +186,37 @@ let map_cross fs xs =
 let all_pairings xs ys =
   List.fold_right (fun xs_hd xs_tl -> (List.fold_right (fun ys_hd ys_tl -> (xs_hd, ys_hd)::ys_tl) ys [])@xs_tl) xs []
 
+(* ANOTHER WAY OF ALLPARINGS using map_cross *)
+let all_pairings xs ys = map_cross (List.map (fun y -> (fun y2 -> (y2, y))) ys) xs;;
 
 (* QUESTION 3 *)
 let prefixes xs = 
   List.rev(List.fold_left (fun base x -> ((List.hd base)@[x])::base) [[]] xs)
 
+(* ALTERNATIVELY
+let prefixes xs = 
+  List.fold_right (fun x acc -> []::(List.map (fun y -> x::y) acc)) xs [[]];;
+
+[1;2;3;4]
+
+[[]]
+[[] [4]]
+..[[] [3] [3 4]]
+..[[] [2] [2 3] [2 3 4]]
+
+See how basically you prepend the new element to every element in the current list, then
+appends an empty list to the front
+ *)
+
+
 let suffixes xs = 
   List.fold_right (fun x base -> ([x]@(List.hd base))::base) xs [[]]
 
-(* List.fold_right (fun pref_x base -> (fun suffixes -> (List.hd suffixes)::pref_x) SUFFS HERE) (prefixes(xs)) [[]]
-List.fold_right (fun xs_hd xs_tl -> (List.fold_right (fun ys_hd ys_tl -> (xs_hd, ys_hd)::ys_tl) ys [])@xs_tl) xs []
-List.fold_right (fun pref_x base -> (fun suffixes -> (List.hd suffixes)::pref_x) (suffixes(xs))) (prefixes(xs)) [[]]
- *)
-(* List.fold_right (fun pref_x base -> (List.fold_right (fun suff_x base-> suff_x) (List.map (fun suf_x -> a::suf_x) (suffixes(xs))) [])::base) (prefixes(xs)) [] *)
-(* List.fold_right (fun suff_x base -> ((List.fold_right (fun pref_x base-> pref_x) (prefixes(xs)) [])@suff_x)::base) (List.map (fun suf_x -> a::suf_x) (suffixes(xs))) [] *)
-
-
 let inject a xs =
-  List.fold_right (fun suff_x base -> (List.hd prefixes(xs))@suff_x::base) (List.map (fun suf_x -> a::suf_x) (suffixes(xs))) []
+  List.map2 (fun x y -> x@y) (prefixes xs) (List.map (fun suf_x -> a::suf_x) (suffixes(xs)))
 
-
-
-
-
-(* List.map (fun suf_x -> a::suf_x) (suffixes(xs)) *)
-
-
-
-
-
-
-  (* List.combine (List.map (fun pre_x -> pre_x::a) (prefixes(xs))) (suffixes(xs)) *)
-
-(* let permutations xs =  failwith "permutations not implemented" *)
-
-
-
-
-
-
-
-
-
+let permutations xs =
+  List.fold_right (fun hd acc -> List.flatten (List.map (fun x -> (inject hd x)) acc)) xs [[]]
 
 
 
