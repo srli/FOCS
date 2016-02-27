@@ -273,7 +273,7 @@ let anbncn = { states = ["start";"q1";"q2";"q3";"q4";"q5";"q6";"acc";"rej"];
 
 let tm_q2_a = { states = ["q1"; "q2"; "q3"; "q4"; "q5"; "q6"; "q7"; "q8"; "acc"; "rej"];
 		input_alphabet = ["c"; "d"];
-		tape_alphabet = ["c"; "d"; "_"; ">"];
+		tape_alphabet = ["c"; "d"; "x"; "_"; ">"];
 		blank = "_";
 		left_marker = ">";
 		start = "q1";
@@ -320,18 +320,49 @@ let tm_q2_a = { states = ["q1"; "q2"; "q3"; "q4"; "q5"; "q6"; "q7"; "q8"; "acc";
 			 | ("acc", "d") -> ("acc", "d", 1)
 			 | ("acc", ">") -> ("acc", ">", 1)
 			 | ("acc", "_") -> ("acc", "_", 1)
+			 | ("acc", "x") -> ("acc", "x", 1)
+
 			 | (_,c) -> ("rej",c,1))}
 
 
-let tm_q2_b = { states = ["x"];
-		input_alphabet = ["x"];
-		tape_alphabet = ["x"];
-		blank = "x";
-		left_marker = "x";
-		start = "x";
-		accept = "x";
-		reject = "x";
-		delta = (fun (x,y) -> (x,y,0))}
+let tm_q2_b = { states = ["start"; "q1"; "q2"; "q3"; "q4"; "q5"; "acc"; "rej"];
+		input_alphabet = ["a"; "b"];
+		tape_alphabet = ["a"; "b"; "x"; "_"; ">"];
+		blank = "_";
+		left_marker = ">";
+		start = "start";
+		accept = "acc";
+		reject = "rej";
+		delta = (fun inp -> match inp with
+			| ("start", "a") -> ("rej", "a", 1)
+			| ("start", "b") -> ("q1", "x", 1)
+			| ("start", "x") -> ("acc", "x", 1)
+			| ("start", ">") -> ("start", ">", 1)
+			| ("start", "_") -> ("acc", "_", 1)
+
+			| ("q1", "a") -> ("q1", "a", 1)
+			| ("q1", "b") -> ("q1", "b", 1)
+			| ("q1", "x") -> ("q2", "x", 0)
+			| ("q1", "_") -> ("q2", "_", 0)
+
+			| ("q2", "a") -> ("q3", "x", 0)
+
+			| ("q3", "a") -> ("q4", "x", 0)
+
+			| ("q4", "a") -> ("q5", "x", 0)
+
+			| ("q5", "a") -> ("q5", "a", 0)
+			| ("q5", "b") -> ("q5", "b", 0)
+			| ("q5", "x") -> ("start", "x", 1)
+
+			| ("acc", "a") -> ("acc", "a", 1)
+			| ("acc", "b") -> ("acc", "b", 1)
+			| ("acc", ">") -> ("acc", ">", 1)
+			| ("acc", "_") -> ("acc", "_", 1)
+			| ("acc", "x") -> ("acc", "x", 1)
+			| (_,c) -> ("rej",c,1))
+
+		}
 
 
 
