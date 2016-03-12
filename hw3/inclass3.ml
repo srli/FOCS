@@ -221,4 +221,14 @@ let rec fold_right comb xs base =
 
 
 
+run permutation "ger#reg"
+
+
+run permutation "hello"
+
+
+
+
+
+
 

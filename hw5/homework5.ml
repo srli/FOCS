@@ -7,6 +7,8 @@ Name: Sophia Li
 Email: sophia.li@students.olin.edu
 
 Remarks, if any:
+Binary addition was pretty scary until I sat down and really thought about it.
+Turns out the logic isn't so bad. This was pretty fun!
 
 *)
 
@@ -143,6 +145,9 @@ let step m config =
 			 before = (remove_last config.before);
 			 after = [(get_last config.before)]@[to_write]@(get_tail config.after);}
 
+
+
+
 let rec run_helper m config =
 	if (haltConfig m config) then
 		config
@@ -155,6 +160,18 @@ let run m w =
 		true
 	else
 		false
+
+(* 
+Sample implementation that defines the helper function inside of it
+
+let run m w = 
+	let rec run' m config = 
+		if (printConfig m config (haltConfig m config)) then
+			acceptConfig m config
+		else
+			run' m (step m config)
+	in run' m (startConfig m w) *)
+
 
 (* 
  * Some sample deterministic Turing machines
@@ -365,18 +382,107 @@ let tm_q2_b = { states = ["start"; "q1"; "q2"; "q3"; "q4"; "q5"; "acc"; "rej"];
 		}
 
 
-
-
 (* QUESTION 3 *)
+(* 1 is right
+	0 is left *)
 
+let binaryAddition = { states = ["start"; "pre_q1"; "q1"; "q2"; "q3"; "q4"; "q5"; "q6"; "q7"; "q8"; "q9"; "q10"; "q11"; "q12"; "q13"; "q14"; "q15"; "q16"; "q17"; "q18"; "q19"; "q20"; "acc"; "rej"];
+		       input_alphabet = ["0"; "1"];
+		       tape_alphabet = ["0"; "1"; "#"; "_"; ">"; "x"];
+		       blank = "_";
+		       left_marker = ">";
+		       start = "start";
+		       accept = "acc";
+		       reject = "rej";
+		       delta = (fun inp -> match inp with
+				| ("start", ">") -> ("pre_q1", ">", 1)
+				| ("start", "_") -> ("rej", "_", 1)
 
-let binaryAddition = { states = ["x"];
-		       input_alphabet = ["x"];
-		       tape_alphabet = ["x"];
-		       blank = "x";
-		       left_marker = "x";
-		       start = "x";
-		       accept = "x";
-		       reject = "x";
-		       delta = (fun (x,y) -> (x,y,0))}
+				| ("pre_q1", "0") -> ("pre_q1", "0", 1)
+				| ("pre_q1", "1") -> ("q1", "1", 1)
+				| ("pre_q1", "#") -> ("q13", "#", 1)
+
+				| ("q1", "0") -> ("q1", "0", 1)
+				| ("q1", "1") -> ("q1", "1", 1)
+				| ("q1", "#") -> ("q2", "#", 1)
+
+				| ("q2", "0") -> ("q2", "0", 1)
+				| ("q2", "1") -> ("q2", "1", 1)
+				| ("q2", "#") -> ("q3", "#", 0)	
+
+				| ("q3", "0") -> ("q4", "1", 0)
+				| ("q3", "1") -> ("q3", "0", 0)
+
+				| ("q4", "0") -> ("q4", "0", 0)
+				| ("q4", "1") -> ("q4", "1", 0)
+				| ("q4", "#") -> ("q5", "#", 0)	
+	
+				| ("q5", "0") -> ("q5", "1", 0)
+				| ("q5", "1") -> ("q5", "0", 0)
+				| ("q5", ">") -> ("q6", ">", 1)	
+
+				| ("q6", "0") -> ("q6", "0", 1)
+				| ("q6", "1") -> ("q6", "1", 1)
+				| ("q6", "#") -> ("q7", "#", 0)	
+
+				| ("q7", "0") -> ("q8", "1", 0)
+				| ("q7", "1") -> ("q7", "0", 0)
+
+				| ("q8", "0") -> ("q8", "0", 0)
+				| ("q8", "1") -> ("q8", "1", 0)
+				| ("q8", ">") -> ("q9", ">", 1)	
+
+				| ("q9", "0") -> ("q9", "1", 1)
+				| ("q9", "1") -> ("q9", "0", 1)
+				| ("q9", "#") -> ("q10", "#", 0)	
+
+				| ("q10", "0") -> ("q10", "0", 0)
+				| ("q10", "1") -> ("q11", "1", 0)
+				| ("q10", ">") -> ("q12", ">", 1)
+
+				| ("q11", "0") -> ("q11", "0", 0)
+				| ("q11", "1") -> ("q11", "1", 0)
+				| ("q11", ">") -> ("q1", ">", 1)
+
+				| ("q12", "0") -> ("q12", "0", 1)
+				| ("q12", "1") -> ("q12", "1", 1)
+				| ("q12", "#") -> ("q13", "#", 1)	
+
+				| ("q13", "0") -> ("q14", "x", 1)
+				| ("q13", "1") -> ("q19", "x", 1)
+
+				| ("q14", "0") -> ("q14", "0", 1)
+				| ("q14", "1") -> ("q14", "1", 1)
+				| ("q14", "#") -> ("q15", "#", 1)
+
+				| ("q15", "0") -> ("q16", "x", 1)
+				| ("q15", "1") -> ("rej", "x", 1)
+				| ("q15", "x") -> ("q15", "x", 1)
+
+				| ("q16", "0") -> ("q17", "0", 0)
+				| ("q16", "1") -> ("q17", "1", 0)
+				| ("q16", "_") -> ("acc", "_", 1)
+
+				| ("q17", "x") -> ("q17", "x", 0)	
+				| ("q17", "#") -> ("q18", "#", 0)							
+
+				| ("q18", "0") -> ("q18", "0", 0)
+				| ("q18", "1") -> ("q18", "1", 0)
+				| ("q18", "x") -> ("q13", "x", 1)
+
+				| ("q19", "0") -> ("q19", "0", 1)
+				| ("q19", "1") -> ("q19", "1", 1)
+				| ("q19", "#") -> ("q20", "#", 1)
+
+				| ("q20", "0") -> ("rej", "x", 1)
+				| ("q20", "1") -> ("q16", "x", 1)
+				| ("q20", "x") -> ("q20", "x", 1)
+
+				| ("acc", "0") -> ("acc", "0", 1)
+				| ("acc", "1") -> ("acc", "1", 1)
+				| ("acc", ">") -> ("acc", ">", 1)
+				| ("acc", "_") -> ("acc", "_", 1)
+				| ("acc", "#") -> ("acc", "#", 1)
+				| (_,c) -> ("rej",c,1))
+		}
 
