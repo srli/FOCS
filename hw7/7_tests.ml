@@ -13,3 +13,6 @@ generate 15 addition "x+xx=xxx";;
 
 generate 12 addition "xx+xxx=xxxxx";;
 generate 12 addition "xxx+xx=xxxxx";;
+
+
+generate 18 powers2 "aaaaaaaa";;

@@ -7,7 +7,6 @@ Name: Sophia Li
 Email: sophia.li@students.olin.edu
 
 Remarks, if any:
-
 *)
 
 
@@ -311,15 +310,6 @@ let dfaThreeA = {
   accepting = ["S"]
 }
 
-(* GRAMMER looks like this: *)
-(* let eqnum = {
-  nonterminals = ["S"];
-  terminals = ["d"; "e"];
-  rules = [("S", "");
-          ("S", "dSe")];
-  startsym = "S"
-} *)
-
 let all_pairings xs ys = List.fold_right (fun xs_hd xs_tl -> (List.fold_right (fun ys_hd ys_tl -> (xs_hd, ys_hd)::ys_tl) ys [])@xs_tl) xs []
 
 let get_1 (a, _) = a
@@ -352,7 +342,6 @@ let dfaGrammar dfa =
     rules = (dfaHelper dfa (all_pairings dfa.states dfa.alphabet)) @ (dfaTerminals dfa.accepting);
     startsym = dfa.start
   }
-
 
 
 (*
@@ -426,20 +415,90 @@ Searching (depth 12, max width 12)
 *)
 
 let powers2 = {
-  nonterminals = ["S"; "A"; "B"; "["; "]"; "#"; "L"];
+  nonterminals = ["S"; "A"; "B"; "*"; "#"; "L"];
   terminals = ["a"];
-  rules = [("S", "#[A]L");
-          ("A[A]", "[A]BB");
-          ("#[A]", "[#]BB");
-          ("[#]BB", "#AA[B]");
-          ("[B]B", "AA[B]");
-          ("[B]L", "AA[L]");
-          ("AA[L]", "[A]BBL");
+  rules = [("S", "#*AL");
+          ("A*A", "*ABB");
+          ("#*A", "*#BB");
+          ("*#BB", "#AA*B");
+          ("*BB", "AA*B");
+          ("*BL", "AA*L");
+          ("AA*L", "*ABBL");
           ("L", "");
-          ("[", "");
-          ("]", "");
+          ("*", "");
           ("#", "");
           ("A", "a");
           ("B", "a")];
   startsym = "S"
 }
+
+(* Test Results:
+
+generate 14 powers2 "aaaa";;
+Searching (depth 01, max width 1)
+Searching (depth 02, max width 2)
+Searching (depth 03, max width 3)
+Searching (depth 04, max width 4)
+Searching (depth 05, max width 5)
+Searching (depth 06, max width 6)
+Searching (depth 07, max width 7)
+Searching (depth 08, max width 8)
+Searching (depth 09, max width 9)
+Searching (depth 10, max width 10)
+   S
+-> #*AL
+-> *#BBL
+-> #AA*BL
+-> AA*BL
+-> aA*BL
+-> aa*BL
+-> aaAA*L
+-> aaaA*L
+-> aaaa*L
+-> aaaaL
+-> aaaa
+- : bool = true
+
+--
+
+generate 18 powers2 "aaaaaaaa";;
+Searching (depth 01, max width 1)
+Searching (depth 02, max width 2)
+Searching (depth 03, max width 3)
+Searching (depth 04, max width 4)
+Searching (depth 05, max width 5)
+Searching (depth 06, max width 6)
+Searching (depth 07, max width 7)
+Searching (depth 08, max width 8)
+Searching (depth 09, max width 9)
+Searching (depth 10, max width 10)
+Searching (depth 11, max width 11)
+Searching (depth 12, max width 12)
+Searching (depth 13, max width 13)
+Searching (depth 14, max width 14)
+Searching (depth 15, max width 15)
+Searching (depth 16, max width 16)
+Searching (depth 17, max width 17)
+Searching (depth 18, max width 18)
+   S
+-> #*AL
+-> *#BBL
+-> #AA*BL
+-> #AAAA*L
+-> #AA*ABBL
+-> #A*ABBBBL
+-> #*ABBBBBBL
+-> *#BBBBBBBBL
+-> #BBBBBBBBL
+-> BBBBBBBBL
+-> aBBBBBBBL
+-> aaBBBBBBL
+-> aaaBBBBBL
+-> aaaaBBBBL
+-> aaaaaBBBL
+-> aaaaaaBBL
+-> aaaaaaaBL
+-> aaaaaaaaL
+-> aaaaaaaa
+- : bool = true
+ *)
