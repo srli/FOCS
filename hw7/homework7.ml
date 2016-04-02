@@ -426,8 +426,20 @@ Searching (depth 12, max width 12)
 *)
 
 let powers2 = {
-  nonterminals = [];
-  terminals = [];
-  rules = [];
-  startsym = ""
+  nonterminals = ["S"; "A"; "B"; "["; "]"; "#"; "L"];
+  terminals = ["a"];
+  rules = [("S", "#[A]L");
+          ("A[A]", "[A]BB");
+          ("#[A]", "[#]BB");
+          ("[#]BB", "#AA[B]");
+          ("[B]B", "AA[B]");
+          ("[B]L", "AA[L]");
+          ("AA[L]", "[A]BBL");
+          ("L", "");
+          ("[", "");
+          ("]", "");
+          ("#", "");
+          ("A", "a");
+          ("B", "a")];
+  startsym = "S"
 }
