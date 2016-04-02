@@ -359,25 +359,71 @@ let dfaGrammar dfa =
  * QUESTION 3
  *
  *)
-
-
 let addition = {
-    nonterminals = ["A"; "B"];
+    nonterminals = ["A"; "B"; "C"];
     terminals = ["+"; "="; "x"];
-    rules = [("A", "A+B=");
+    rules = [("A", "+=");
             ("A", "");
-            ("A", "aAc");
-            ("A", "bBc");
+            ("A", "xAx");
+            ("A", "+B");
             ("B", "");
-            ("B", "Bbc");
-            ("ab", "a+b");
-            ("ab", "a+b");
-            ("bc", "b=c");
-            ("a", "x");
-            ("b", "x");
-            ("c", "x")];
+            ("B", "x=x");
+            ("B", "xBC");
+            ("C=", "=C");
+            ("C", "x")];
     startsym = "A"
   }
+
+(* Test Results:
+generate 12 addition "xx+xxx=xxxxx";;
+Searching (depth 01, max width 1)
+Searching (depth 02, max width 2)
+Searching (depth 03, max width 3)
+Searching (depth 04, max width 4)
+Searching (depth 05, max width 5)
+Searching (depth 06, max width 6)
+Searching (depth 07, max width 7)
+Searching (depth 08, max width 8)
+Searching (depth 09, max width 9)
+Searching (depth 10, max width 10)
+Searching (depth 11, max width 11)
+Searching (depth 12, max width 12)
+   A
+-> xAx
+-> xxAxx
+-> xx+Bxx
+-> xx+xBCxx
+-> xx+xxBCCxx
+-> xx+xxx=xCCxx
+-> xx+xxx=xxCxx
+-> xx+xxx=xxxxx
+- : bool = true
+
+---
+
+generate 12 addition "xxx+xx=xxxxx";;
+Searching (depth 01, max width 1)
+Searching (depth 02, max width 2)
+Searching (depth 03, max width 3)
+Searching (depth 04, max width 4)
+Searching (depth 05, max width 5)
+Searching (depth 06, max width 6)
+Searching (depth 07, max width 7)
+Searching (depth 08, max width 8)
+Searching (depth 09, max width 9)
+Searching (depth 10, max width 10)
+Searching (depth 11, max width 11)
+Searching (depth 12, max width 12)
+   A
+-> xAx
+-> xxAxx
+-> xxxAxxx
+-> xxx+Bxxx
+-> xxx+xBCxxx
+-> xxx+xx=xCxxx
+-> xxx+xx=xxxxx
+- : bool = true
+*)
 
 let powers2 = {
   nonterminals = [];
