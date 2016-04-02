@@ -362,12 +362,22 @@ let dfaGrammar dfa =
 
 
 let addition = {
-  nonterminals = [];
-  terminals = [];
-  rules = [];
-  startsym = ""
-}
-
+    nonterminals = ["A"; "B"];
+    terminals = ["+"; "="; "x"];
+    rules = [("A", "A+B=");
+            ("A", "");
+            ("A", "aAc");
+            ("A", "bBc");
+            ("B", "");
+            ("B", "Bbc");
+            ("ab", "a+b");
+            ("ab", "a+b");
+            ("bc", "b=c");
+            ("a", "x");
+            ("b", "x");
+            ("c", "x")];
+    startsym = "A"
+  }
 
 let powers2 = {
   nonterminals = [];

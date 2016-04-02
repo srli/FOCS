@@ -7,4 +7,8 @@ generate 10 ambncmn "";;
 generate 10 amcmnbn "accb";;
 generate 10 amcmnbn "aacccb";;
 
-generate 10 ambncm "aabbc";;
+generate 10 ambncm "";;
+
+generate 15 addition "x+xx=xxx";;
+
+generate 15 addition "xx+xxx=xxxxx";;
