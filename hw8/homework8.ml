@@ -364,7 +364,7 @@ let plus_int = ("plus_int","/m./n.
       )
     )
 
-  (if (or (and (fst m) (fst n)) (and (not (fst m)) (not (fst m))))
+  (if (or (and (fst m) (fst n)) (and (not (fst m)) (not (fst n))))
     (plus (snd m) (snd n))
     (minus (if (geq (snd m) (snd n)) (snd m) (snd n)) (if (geq snd(m) snd(n)) (snd n) (snd m))))
 )")
