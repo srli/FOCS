@@ -6,7 +6,8 @@ Name: Sophia Li
 
 Email: sophia.li@students.olin.edu
 
-Remarks, if any:
+Remarks, if any: hahaha i spent hours debugging plus_int because i wrote snd(m) instead of (snd m).
+Lessons were learned.
 
 *)
 
@@ -253,8 +254,6 @@ module LambdaTerms = struct
 end
 
 
-
-
 (*
  * Simplification of lambda terms
  *
@@ -366,7 +365,11 @@ let plus_int = ("plus_int","/m./n.
 
   (if (or (and (fst m) (fst n)) (and (not (fst m)) (not (fst n))))
     (plus (snd m) (snd n))
-    (minus (if (geq (snd m) (snd n)) (snd m) (snd n)) (if (geq snd(m) snd(n)) (snd n) (snd m))))
+
+    (minus
+      (if (geq (snd m) (snd n)) (snd m) (snd n))
+      (if (geq (snd m) (snd n)) (snd n) (snd m)))
+  )
 )")
 
 let times_int = ("times_int","/m./n.
@@ -396,18 +399,18 @@ let q2_defs = q1_defs @ [int; neg_int; plus_int; times_int ]
  *
  *)
 
-let empty = ("empty","not_implemented")
+let empty = ("empty","/a./f.(a)")
 
-let cons = ("cons","not_implemented")
+let cons = ("cons","/h./t./a./f.(f h t)")
 
-let match_list = ("match_list","not_implemented")
+let match_list = ("match_list","/L./a./f.(L a f)")
 
-let length = ("length","not_implemented")
+let length = ("length","Y (/length./L.((match_list L) _0 (/h./t.(plus _1 (length t)))))")
 
-let sum = ("sum","not_implemented")
+let sum = ("sum","Y (/sum./L.((match_list L) _0 (/h./t.(plus h (sum t)))))")
 
-let append = ("append","not_implemented")
+let append = ("append","Y (/append./L1./L2.((match_list L2) L1 (/h./t.(cons h (append L1 t)))))")
 
-let map = ("map","not_implemented")
+let map = ("map","Y (/map./f./L.((match_list L) empty (/h./t.(cons (f h) (map f t)))))")
 
-let q3_defs = default_defs @ [empty; cons; match_list; length; sum; append; map]
+let q3_defs = q2_defs @ [empty; cons; match_list; length; sum; append; map]
