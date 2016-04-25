@@ -169,36 +169,52 @@ let mult s1 s2 =
 let unzip s =
   ((map (fun (x,y) -> x) s), (map (fun (x,y) -> y) s))
 
-(* Partial sums *)
-let drop s =
-  let (f, r) = split s in r
-
 let rec fold f init_s s =
   map (fun (x, y) -> f x y) (zip (fby (init_s) (fun () -> (fold f init_s s))) s)
 
+let drop s =
+  (fun (x, y) -> y) (split s)
 
-  (* fby init_s (fun () -> f (fold f init_s s) s) *)
+let first s =
+  (fun (x, y) -> x) (split s)
+
+let running_max s =
+  fold (fun x y -> if x > y then x else y) (first s) s
+
+(* let rec stutter s = *)
+  (* zip s (cst 2) *)
 
 
-(* prefix 10 (fold (fun a r -> a+r) (cst 0) nats);; *)
 
 
-let running_max s = failwith "not implemented"
-
-let rec stutter s = failwith "not implemented"
 
 (*
  * QUESTION 2
  *
  *)
 
-let rec arctan z = failwith "not implemented"
+(* let plus_neg = map (fun x -> if x mod 2 = 0 then 1 else -1) nats *)
+(* let odd_sw = mult plus_neg odds *)
+(* let next_at = (fun x y -> y +. (z**x/.x)) *)
 
-(* PLACEHOLDER -- REPLACE WITH YOUR OWN DEFINITION *)
+let float_in s = map (fun x -> float_of_int x) s
+let float_cst z = map (fun x -> x*.z) (float_in (cst 1))
+let gn x = (-1.0**((1.0+.x)/.2.0));;
 
-let pi = cst (0)
+let arctan z =
+  map (fun x -> x-.z) (fold (fun x y -> x +. (gn (y+.2.0))*.((z**y)/.y)) (float_cst z) (float_in odds))
 
-let rec newton f df guess = failwith "not implemented"
+let scalef n s =
+  map (fun x -> n*.x) s
+
+let pi = map (fun (x, y) -> x-.y) (zip (scalef 16.0 (arctan (1.0/.5.0))) (scalef 4.0 (arctan (1.0/.239.0))))
+
+let rec newton f df guess =
+  let n_i = (newton f df guess) in
+  fby guess (fun () -> )
+
+  (* fold (fun x y -> x -. (f y)/.(df y)) (float_cst guess) *)
+
 
 let derivative f x = failwith "not implemented"
 
