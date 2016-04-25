@@ -167,15 +167,25 @@ let mult s1 s2 =
   map (fun (x, y) -> x * y) (zip s1 s2)
 
 let unzip s =
-  map (fun (x, y) -> )
+  ((map (fun (x,y) -> x) s), (map (fun (x,y) -> y) s))
 
-let rec fold f init_s s = failwith "not implemented"
+(* Partial sums *)
+let drop s =
+  let (f, r) = split s in r
+
+let rec fold f init_s s =
+  map (fun (x, y) -> f x y) (zip (fby (init_s) (fun () -> (fold f init_s s))) s)
+
+
+  (* fby init_s (fun () -> f (fold f init_s s) s) *)
+
+
+(* prefix 10 (fold (fun a r -> a+r) (cst 0) nats);; *)
+
 
 let running_max s = failwith "not implemented"
 
 let rec stutter s = failwith "not implemented"
-
-
 
 (*
  * QUESTION 2

@@ -13,6 +13,7 @@ splitter -> split s1    (this returns a pair of strings)
 we etalked about in class. Observe the order of informaiton flow. The (fun () -> ...)
 is a bit strange, but its because OCaml requires recursive calls to be a function*)
 let rec natsF k = fby (cst k) (fun () -> map (fun s -> s+1) (natsF k))
+
 let nats = natsf 0
 p nats
 (*
@@ -35,7 +36,7 @@ let drop s =
 let rec psums s = fby s (fun () -> plus (drop s) (psums s))
 
 (* Fibonacci *)
-let ref fibF () = fby (cst 0) (fun () -> fby (cst 1) (fun () -> plus (fibF ()) (drop (fibF ()))))
+let rec fibF () = fby (cst 0) (fun () -> fby (cst 1) (fun () -> plus (fibF ()) (drop (fibF ()))))
 let fib = fibF ()
 
 (* Sieve
