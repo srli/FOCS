@@ -181,10 +181,8 @@ let first s =
 let running_max s =
   fold (fun x y -> if x > y then x else y) (first s) s
 
-(* let rec stutter s = *)
-  (* zip s (cst 2) *)
-
-
+let rec stutter s =
+  fby s (fun () -> fby s (fun () -> stutter (drop s)))
 
 
 
@@ -201,8 +199,11 @@ let float_in s = map (fun x -> float_of_int x) s
 let float_cst z = map (fun x -> x*.z) (float_in (cst 1))
 let gn x = (-1.0**((1.0+.x)/.2.0));;
 
+(* let arctan z =
+  map (fun x -> x-.z) (fold (fun x y -> if x = y then x else x +. (gn (y+.2.0))*.((z**y)/.y)) (float_cst z) (float_in odds))
+   *)
 let arctan z =
-  map (fun x -> x-.z) (fold (fun x y -> x +. (gn (y+.2.0))*.((z**y)/.y)) (float_cst z) (float_in odds))
+  (fold (fun x y -> if x = y then x else x +. (gn (y+.2.0))*.((z**y)/.y)) (float_cst z) (float_in odds))
 
 let scalef n s =
   map (fun x -> n*.x) s
@@ -218,19 +219,31 @@ let derivative f x =
 let limit epsilon s =
   filter (fun x y -> (x -. y) < epsilon) s (drop s)
 
-
 (*
  * QUESTION 3
  *
  *)
 
+let listify s =
+  map (fun x -> [x]) s
 
-let rev_prefixes s = failwith "not implemented"
+let rev_prefixes s =
+  fold (fun acc x -> if x = acc then x else x@acc) (listify (first s)) (listify s)
 
-let prefixes s = failwith "not implemented"
+let prefixes s =
+  fold (fun acc x -> if x = acc then x else acc@x) (listify (first s)) (listify s)
 
-let stripes s1 s2 = failwith "not implemented"
+let rec pairings xs ys =
+  List.fold_right2 (fun hd1 hd2 acc -> [hd1;hd2]::acc) xs ys []
 
-let rec flatten ss = failwith "not implemented"
+let stripes s1 s2 =
+  map (fun (xs, ys) -> pairings xs ys) (zip (prefixes s1) (rev_prefixes s2))
+
+let rec flatten ss =
+  (fun xs -> (prefix 1 xs)@(flatten (drop xs))) ss
+
+  (* fold (fun acc x -> acc@x) (first ss) ss *)
+
+
 
 let pairs s1 s2 =  failwith "not implemented"
