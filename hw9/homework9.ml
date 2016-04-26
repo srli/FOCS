@@ -2,12 +2,18 @@
 
 HOMEWORK 9
 
-Name:
+Name: Sophia Li
 
-Email:
+Email: sophia.li@students.olin.edu
 
 Remarks, if any:
+For some reason, my arctan function is ever so slightly off, and my Newton function
+doesn't display the first 1.0. It's probably because I did something dumb
+with my fold equation.
 
+I spent a long time on flatten. I asked for help for the final flatten function,
+since the one I wrote didn't work. I have a vague understanding of why, but I think
+I'll need more time to unpack that one.
 *)
 
 
@@ -117,8 +123,6 @@ let prefix : int -> 'a stream -> 'a list = AbsStream.prefix
 let nth : int -> 'a stream -> 'a = AbsStream.nth
            (* return the nth element of a stream *)
 
-
-
 (* some useful sample streams, from class *)
 
 let nats =
@@ -191,17 +195,12 @@ let rec stutter s =
  *
  *)
 
-(* let plus_neg = map (fun x -> if x mod 2 = 0 then 1 else -1) nats *)
-(* let odd_sw = mult plus_neg odds *)
-(* let next_at = (fun x y -> y +. (z**x/.x)) *)
+
 
 let float_in s = map (fun x -> float_of_int x) s
 let float_cst z = map (fun x -> x*.z) (float_in (cst 1))
 let gn x = (-1.0**((1.0+.x)/.2.0));;
 
-(* let arctan z =
-  map (fun x -> x-.z) (fold (fun x y -> if x = y then x else x +. (gn (y+.2.0))*.((z**y)/.y)) (float_cst z) (float_in odds))
-   *)
 let arctan z =
   (fold (fun x y -> if x = y then x else x +. (gn (y+.2.0))*.((z**y)/.y)) (float_cst z) (float_in odds))
 
@@ -240,10 +239,19 @@ let stripes s1 s2 =
   map (fun (xs, ys) -> pairings xs ys) (zip (prefixes s1) (rev_prefixes s2))
 
 let rec flatten ss =
-  (fun xs -> (prefix 1 xs)@(flatten (drop xs))) ss
+  let cleaned = filter (fun var x -> x != []) (cst 0) ss in
+  let (head, tail) = split cleaned in
+    fby (map (fun (hd::tl) -> hd) head) (fun () -> flatten (fby (map (fun (hd::tl) -> tl) head) (fun () -> tail)))
 
-  (* fold (fun acc x -> acc@x) (first ss) ss *)
+(*
+let map_tl tl in_stream =
+  map (fun x -> tl) in_stream
+
+let rec flatten ss =
+  match (unmk1 ss) with
+  | [] -> flatten (drop ss)
+  | hd :: tl -> fby (cst hd) (fun () -> flatten (fby (map_tl tl ss) (fun () -> unmk2 ss))) *)
 
 
-
-let pairs s1 s2 =  failwith "not implemented"
+let pairs s1 s2 =
+  flatten (stripes s1 s2)
