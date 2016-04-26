@@ -210,15 +210,13 @@ let scalef n s =
 let pi = map (fun (x, y) -> x-.y) (zip (scalef 16.0 (arctan (1.0/.5.0))) (scalef 4.0 (arctan (1.0/.239.0))))
 
 let rec newton f df guess =
-  let n_i = (newton f df guess) in
-  fby guess (fun () -> )
+  fold (fun x y -> x -. (f x)/.(df x)) (float_cst guess) nats
 
-  (* fold (fun x y -> x -. (f y)/.(df y)) (float_cst guess) *)
+let derivative f x =
+  map (fun num -> ((f (x +. (1.0/.num)) ) -. (f x)) /.(1.0/.num)) (float_in (drop nats))
 
-
-let derivative f x = failwith "not implemented"
-
-let limit epsilon s = failwith "not implemented"
+let limit epsilon s =
+  filter (fun x y -> (x -. y) < epsilon) s (drop s)
 
 
 (*
