@@ -165,16 +165,76 @@ let rec rotate t dir =
     else
       Empty
 
+(* let rec bst_insert t x =
+  match t with
+  | Empty -> Node(x, Empty, Empty)
+  | Node(n, left, right) ->
+    if n < x then
+        Node(n, left, (bst_insert right x))
+    else if n > x then
+        Node(n, (bst_insert left x), right)
+    else
+      Node(n, left, right) *)
+
 let rec avl_helper t x=
   match t with
-  | Empty -> Empty
+  | Empty -> Node(x, Empty, Empty)
   | Node(n, left, right) ->
+    if n > x then
+      let res = Node(n, (avl_helper left x), right) in
+        match res with
+        | Empty -> Node(x, Empty, Empty)
+        | Node(l_n, l_left, l_right) ->
+        let height_diff = (height l_left) - (height l_right) in
+          if height_diff > 1 then
+            rotate res "ll"
+          else if height_diff < 1 then
+            rotate res "rl"
+          else
+            res
+
+    else if n < x then
+      let res = Node(n, left, (avl_helper right x)) in
+        match res with
+        | Empty -> Node(x, Empty, Empty)
+        | Node(r_n, r_left, r_right) ->
+        let height_diff = (height r_left) - (height r_right) in
+          if height_diff > 1 then
+            rotate res "lr"
+          else if height_diff < 1 then
+            rotate res "rr"
+          else
+            res
+(*
+
+    else if n < x then
+      let res = Node(n, left, (avl_helper right x)) in
+          match res with
+          | Empty -> Empty
+          | Node(r_n, r_left, r_right) ->
+            if abs((height r_left) - (height r_right)) > 1 then
+              if r_n < x then
+                rotate res "rr"
+              else
+                rotate res "lr"
+            else res *)
+
+    else
+      Node(n, left, right)
+(*
+
+      if (height left) - (height right) > 1 then
+        match left with
+        | Empty -> Node(n, left, (avl_helper (rotate )))
+        |
+
+
     if (height left) - (height right) > 1 then
       Node(n, (avl_helper (rotate left "ll")), (avl_helper right))
     else if (height left) - (height right) < -1 then
       Node(n, (avl_helper left), (avl_helper (rotate right "rr")))
     else
-      Node(n, (avl_helper left), (avl_helper right))
+      Node(n, (avl_helper left), (avl_helper right)) *)
 
 let avl_insert t x =
-  avl_helper (bst_insert t x)
+  avl_helper t x
