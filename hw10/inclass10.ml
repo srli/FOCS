@@ -1,3 +1,22 @@
+pbt (rotate Node(1, Node(2, Node(3, Empty, Empty), Empty), Empty) "rr")
+let j = Node(1, Node(2, Node(3, Empty, Empty), Empty), Empty);;
+
+let k = Node(1, Empty, Node(2, Empty, Node(3, Empty, Empty)));;
+pbt (rotate k "ll");;
+
+let m = Node(1, Empty, Node(2, Node(3, Empty, Empty), Empty));;
+pbt (rotate m "lr");;
+
+
+T.data > x : return Insert(T.left, x);
+            if ((height(T.left)- height(T.right)) = 2){
+            if (T.left.data > x ) then //outside case
+            T = RotatefromLeft (T);
+            else //inside case
+            T = DoubleRotatefromLeft (T);}
+T.data < x : return Insert(T.right, x);
+code similar to the left case
+
 (* type for arithmetic expressions *)
 type aexp =
   | Number of int

@@ -118,18 +118,8 @@ let rec bst_insert t x =
   | Empty -> Node(x, Empty, Empty)
   | Node(n, left, right) ->
     if n < x then
-      if (right = Empty) then
-        Node(n, Empty, Node(x, Empty, Empty))
-      else if (List.hd (preorder right)) > x then
-        Node(n, Empty, Node(x, Empty, right))
-      else
         Node(n, left, (bst_insert right x))
     else if n > x then
-      if (left = Empty) then
-        Node(n, Node(x, Empty, Empty), Empty)
-      else if (List.hd (preorder left)) < x then
-        Node(n, Empty, Node(x, left, Empty))
-      else
         Node(n, (bst_insert left x), right)
     else
       Node(n, left, right)
@@ -145,14 +135,46 @@ let rec bst_lookup t x =
     else
       bst_lookup right x
 
-let rec bstify_helper t nodes =
+let rec bstify_helper nodes =
   match nodes with
   | [] -> Empty
   | hd :: tl ->
-    bstify_helper (bst_insert t hd) tl
+      bst_insert (bstify_helper tl) hd
 
 let bstify t =
-  bstify_helper Empty (preorder t)
+  bstify_helper (preorder t)
 
+let rec rotate t dir =
+  match t with
+  | Empty -> Empty
+  | Node(n, left, right) ->
+    if dir = "ll" then
+      match right with
+      |Empty -> Empty
+      |Node(r_head, r_left, r_right) ->
+        Node(r_head, Node(n, left, r_left), r_right)
+    else if dir = "rr" then
+      match left with
+      |Empty -> Empty
+      |Node(l_head, l_left, l_right) ->
+        Node(l_head, l_left, Node(n, l_right, right))
+    else if dir = "lr" then
+      Node(n, left, (rotate right "rr"))
+    else if dir = "rl" then
+      Node(n, (rotate left "ll"), right)
+    else
+      Empty
 
-let avl_insert t x = failwith ("avl_insert not implemented")
+let rec avl_helper t x=
+  match t with
+  | Empty -> Empty
+  | Node(n, left, right) ->
+    if (height left) - (height right) > 1 then
+      Node(n, (avl_helper (rotate left "ll")), (avl_helper right))
+    else if (height left) - (height right) < -1 then
+      Node(n, (avl_helper left), (avl_helper (rotate right "rr")))
+    else
+      Node(n, (avl_helper left), (avl_helper right))
+
+let avl_insert t x =
+  avl_helper (bst_insert t x)
